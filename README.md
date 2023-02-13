@@ -1,2 +1,2 @@
-# deap
-Experiments under DEAP dataset
+# DEAP
+Experiments under DEAP dataset for emotion recognition.
