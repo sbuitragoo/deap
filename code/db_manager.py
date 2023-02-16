@@ -15,11 +15,11 @@ class DEAP_Manager:
     def show_subject_data_shape(self, subject):
         pass
 
-    def get_file_for_subject(self, subject):
-        with open(f'{self.db_path}/s'+ (('0' + str(subject)) if subject < 10 else str(subject)) + '.dat', 'rb') as file:
+    def get_file_for_subject(self, sub):
+        with open(f'{self.db_path}/s'+ (('0' + str(sub)) if sub < 10 else str(sub)) + '.dat', 'rb') as file:
             subject = pickle.load(file, encoding='latin1')
-        
-        self.file[subject] = subject
+        print(subject)
+#         self.file[sub] = subject
 
     def get_data_for_subject(self, subject):
         return self.file[subject]['data']
