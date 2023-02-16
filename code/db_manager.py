@@ -22,10 +22,10 @@ class DEAP_Manager:
         self.file[f"subject{sub}"] = subject
 
     def get_data_for_subject(self, subject):
-        return self.file[subject]['data']
+        return self.file[f"subject{subject}"]['data']
     
     def get_labels_for_subject(self, subject):
-        return self.file[subject]['labels']
+        return self.file[f"subject{subject}"]['labels']
     
     def get_subject_shape(self, subject):
-        return self.file[subject].shape
+        return self.file[f"subject{subject}"].shape
