@@ -46,6 +46,6 @@ class DEAP_Manager:
         new_data = np.zeros((input_shape[0], len(channels), input_shape[-1]))
 
         for index in range(len(channels)):
-            new_data[:,index,:] = channels[:,index,:]
+            new_data[:,index,:] = channels[index][:,index,:]
 
         return new_data
