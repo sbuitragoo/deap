@@ -36,16 +36,15 @@ class DEAP_Manager:
     def get_subject_shape(self, sub):
         return (self.file[f"subject{sub}"]['data'].shape, self.file[f"subject{sub}"]['labels'].shape)
     
-    def get_wanted_channels(self, channels):
+    def get_wanted_channels(self, channels, sub):
         if (len(channels) == 0):
             raise Exception("Channels list should have at least one element")    
         
-        existant_keys = list(self.file.keys())
-        input_shape = self.file[existant_keys[0]]['data'].shape
+        input_shape = self.file[f"subject{sub}"]['data'].shape
 
         new_data = np.zeros((input_shape[0], len(channels), input_shape[-1]))
 
         for index in range(len(channels)):
-            new_data[:,index,:] = channels[index][:,index,:]
+            new_data[:,index,:] = self.file[f"subject{sub}"]['data'][:,index,:]
 
         return new_data
