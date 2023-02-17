@@ -25,4 +25,4 @@ class DEAP_Manager:
         return self.file[f"subject{sub}"]['labels']
     
     def get_subject_shape(self, sub):
-        return self.file[f"subject{sub}"].shape
+        return (self.file[f"subject{sub}"]['data'].shape, self.file[f"subject{sub}"]['labels'].shape)
