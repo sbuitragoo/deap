@@ -17,7 +17,7 @@ class DEAP_Manager:
         plt.xlabel("time[s]")
         
         for ch in range(subject.shape[1]):
-            plt.plot(subject[0, ch, :], time)
+            plt.plot(time, subject[0, ch, :])
             plt.grid()
         
 
