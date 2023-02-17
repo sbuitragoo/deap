@@ -12,7 +12,7 @@ class DEAP_Manager:
 
     def show_sample(self, sub):
         subject = self.file[f"subject{sub}"]['data']
-        time = np.arange(0, subject.shape[-1] / 128, 1280) # time samples / sample freq
+        time = np.linspace(0, subject.shape[-1] / 128, 8064) # time samples / sample freq
         plt.figure(figsize=(16,9), dpi=90)
         plt.xlabel("time[s]")
         
