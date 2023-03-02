@@ -117,3 +117,6 @@ def GFC_triu_net_avg(nb_classes: int,
     softmax      = Activation('softmax',name='output')(block)
     
     return Model(inputs=input_main, outputs=softmax)
+
+if (__name__ == "__main__"):
+    pass

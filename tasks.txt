@@ -1,0 +1,2 @@
+Next step: Going to https://github.com/nebojsa55/EmotionRecognition/blob/master/src/classification_neural_network.ipynb and take the useful things to finally
+use Daniel's network to classify.

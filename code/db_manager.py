@@ -48,3 +48,6 @@ class DEAP_Manager:
             new_data[:,index,:] = self.file[f"subject{sub}"]['data'][:,index,:]
 
         return new_data
+
+if (__name__ == "__main__"):
+    pass
