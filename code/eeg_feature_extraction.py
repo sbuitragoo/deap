@@ -241,7 +241,7 @@ if __name__ == "__main__":
     for j in tqdm.tqdm(EEG_ch,desc = 'EEG channel number', total = 32):
         d = []
         for k in tqdm.tqdm(range(32),desc = 'Subject ID', total = 32): 
-            PATH = os.path.dirname(os.path.abspath('')) + '\dataset\signals_processed\DEAP\s{num:02d}.dat'.format(num = k + 1)
+            PATH = '../../' + 'DEAP/s{num:02d}.dat'.format(num = k + 1)
             
             with open(PATH, 'rb') as f:
                 data = pickle.load(f, encoding = 'bytes') # data_dim 40x40x8064 (num_videos x phy_channels x data)                                             

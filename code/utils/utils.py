@@ -1,9 +1,12 @@
+import os
 import pickle
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
 from db_manager import DEAP_Manager
+
+from sklearn.metrics import cohen_kappa_score
 
 def show_db_samples():
     db_path = '../../data_preprocessed_python'
@@ -36,6 +39,29 @@ def show_db_samples():
             plt.grid(True)
     
     print(f"Data size: {deap_manager.get_subject_shape(random_subject)}")
+
+def prepare_experiment(folds, epochs_train, save_folder, data_set = 'DEAP'):
+
+    experiment=f'{data_set}__{folds}_fold'
+    model_name= f'{save_folder}{epochs_train}_epoch'
+    PATH=f'./{save_folder}/'
+
+    experiment_dict = {
+        "folds": folds,
+        "epochs_train": epochs_train,
+        "save_folder": save_folder,
+        "data_set": data_set,
+        "experiment": experiment,
+        "model_name": model_name,
+        "path": PATH
+    }
+
+    os.mkdir(f'{PATH}')
+
+    return experiment_dict
+
+def kappa(y_true, y_pred):
+    return cohen_kappa_score(np.argmax(y_true, axis = 1),np.argmax(y_pred, axis = 1))
 
 if __name__ == "__main__":
     pass

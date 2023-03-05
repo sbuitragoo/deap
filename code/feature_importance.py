@@ -67,7 +67,7 @@ def get_feats(type_, names):
 if __name__ == "__main__":
 
     N_PATIENTS = 33
-    data = pd.read_csv("za_klasifikaciju.csv")
+    data = pd.read_csv("../za_klasifikaciju.csv")
 
     EEG_DIR = 'eeg_features/'
     electrodes = os.listdir(EEG_DIR)
