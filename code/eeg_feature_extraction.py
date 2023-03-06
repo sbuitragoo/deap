@@ -233,9 +233,9 @@ if __name__ == "__main__":
     
     # Extract features from EEG signals
     EEG_ch = range(32)
-    EEG_ch_names = ['\Fp1','\AF3', '\F3', '\F7', '\FC5', '\FC1', '\C3','\T7','\CP5','\CP1',
-                    '\P3','\P7','\PO3','\O1','\Oz','\Pz','\Fp2','\AF4','\Fz','\F4','\F8','\FC6',
-                    '\FC2','\Cz','\C4','\T8','\CP6','\CP2','\P4','\P8','\PO4','\O2']
+    EEG_ch_names = ['/Fp1','/AF3', '/F3', '/F7', '/FC5', '/FC1', '/C3','/T7','/CP5','/CP1',
+                    '/P3','/P7','/PO3','/O1','/Oz','/Pz','/Fp2','/AF4','/Fz','/F4','/F8','/FC6',
+                    '/FC2','/Cz','/C4','/T8','/CP6','/CP2','/P4','/P8','/PO4','/O2']
     fs = 128 # Hz
     
     for j in tqdm.tqdm(EEG_ch,desc = 'EEG channel number', total = 32):
@@ -263,6 +263,11 @@ if __name__ == "__main__":
             # Put together all the features and save them
             df = pd.concat([d1,d2,d3,d4], axis = 1)
             
-            PATH_SAVE = os.path.dirname(os.path.abspath('')) + '\src\eeg_features' + str(EEG_ch_names[j])
+            PATH_SAVE = os.path.dirname(os.path.abspath('')) + '/deap/eeg_features' + str(EEG_ch_names[j])
+
+            try:
+                os.mkdir(PATH_SAVE)
+            except:
+                pass
             
-            df.to_csv(PATH_SAVE + '\s{num:02d}_eegfeatures.csv'.format(num = k + 1))
+            df.to_csv(PATH_SAVE + '/s{num:02d}_eegfeatures.csv'.format(num = k + 1))
