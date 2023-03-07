@@ -67,7 +67,7 @@ def get_feats(type_, names):
 if __name__ == "__main__":
 
     N_PATIENTS = 33
-    data = pd.read_csv("../za_klasifikaciju.csv")
+    data = pd.read_csv("za_klasifikaciju.csv")
 
     EEG_DIR = 'eeg_features/'
     electrodes = os.listdir(EEG_DIR)
@@ -102,24 +102,27 @@ if __name__ == "__main__":
     arousal = np.array(mi_eeg[1])
     dominance = np.array(mi_eeg[2])
     liking = np.array(mi_eeg[3])
+    f_names_eeg = np.array(f_names_eeg)
+
+    print(f_names_eeg.shape)
 
     #-------------------------------#
 
     ind_v = np.argsort(valence)
-    valence = valence[ind_v]
-    names_v = f_names_eeg[ind_v]
+    valence = np.take_along_axis(valence, ind_v, 1)
+    names_v = np.take_along_axis(f_names_eeg, ind_v, 0)
 
     ind_a = np.argsort(arousal)
-    arousal = arousal[ind_a]
-    names_a = f_names_eeg[ind_a]
+    arousal = np.take_along_axis(arousal, ind_a, 1)
+    names_a = np.take_along_axis(f_names_eeg, ind_a, 0)
 
     ind_d = np.argsort(dominance)
-    dominance = dominance[ind_d]
-    names_d = f_names_eeg[ind_d]
+    dominance = np.take_along_axis(dominance, ind_d, 1)
+    names_d = np.take_along_axis(f_names_eeg, ind_d, 0)
 
     ind_l = np.argsort(liking)
-    liking = liking[ind_l]
-    names_l = f_names_eeg[ind_l]
+    liking = np.take_along_axis(liking, ind_l, 1)
+    names_l = np.take_along_axis(f_names_eeg, ind_l, 0)
     
     #-------------------------------#
 
