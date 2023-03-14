@@ -108,35 +108,36 @@ if __name__ == "__main__":
 
     #-------------------------------#
 
-    ind_v = np.argsort(valence)
-    valence = np.take_along_axis(valence, ind_v, 1)
-    names_v = np.take_along_axis(f_names_eeg, ind_v, 0)
+    # Actually cannot understand what are these lines used for
+    # ind_v = np.argsort(valence)
+    # valence = np.take_along_axis(valence, ind_v, 1)
+    # names_v = np.take_along_axis(f_names_eeg, ind_v, 0)
 
-    ind_a = np.argsort(arousal)
-    arousal = np.take_along_axis(arousal, ind_a, 1)
-    names_a = np.take_along_axis(f_names_eeg, ind_a, 0)
+    # ind_a = np.argsort(arousal)
+    # arousal = np.take_along_axis(arousal, ind_a, 1)
+    # names_a = np.take_along_axis(f_names_eeg, ind_a, 0)
 
-    ind_d = np.argsort(dominance)
-    dominance = np.take_along_axis(dominance, ind_d, 1)
-    names_d = np.take_along_axis(f_names_eeg, ind_d, 0)
+    # ind_d = np.argsort(dominance)
+    # dominance = np.take_along_axis(dominance, ind_d, 1)
+    # names_d = np.take_along_axis(f_names_eeg, ind_d, 0)
 
-    ind_l = np.argsort(liking)
-    liking = np.take_along_axis(liking, ind_l, 1)
-    names_l = np.take_along_axis(f_names_eeg, ind_l, 0)
+    # ind_l = np.argsort(liking)
+    # liking = np.take_along_axis(liking, ind_l, 1)
+    # names_l = np.take_along_axis(f_names_eeg, ind_l, 0)
     
     #-------------------------------#
 
     valence = valence[-200:]
-    names_v = names_v[-200:]
+    names_v = f_names_eeg[-200:]
 
     arousal = arousal[-200:]
-    names_a = names_a[-200:]
+    names_a = f_names_eeg[-200:]
 
     dominance = dominance[-200:]
-    names_d = names_d[-200:]
+    names_d = f_names_eeg[-200:]
 
     liking = liking[-200:]
-    names_l = names_l[-200:]
+    names_l = f_names_eeg[-200:]
 
     #-------------------------------#
     
