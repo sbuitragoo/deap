@@ -24,7 +24,7 @@ feats_ar = pd.read_csv('arousal_features_200.csv', index_col=0)
 feats_dom = pd.read_csv('dominance_features_200.csv', index_col=0)
 feats_lik = pd.read_csv('liking_features_200.csv', index_col=0)
 
-targets = pd.read_csv('../za_klasifikaciju.csv', index_col=0)
+targets = pd.read_csv('za_klasifikaciju.csv', index_col=0)
 
 targets = targets[['Valence', 'Arousal', 'Dominance', 'Liking']]
 targets[targets < 4.5] = 0
@@ -50,6 +50,7 @@ for c in ['Valence', 'Arousal', 'Dominance', 'Liking']:
 
     x_train, x_test, y_train, y_test = train_test_split(data, targets[c], test_size=0.2)
 
+    print(x_train.shape, x_test.shape, y_train.shape, y_test.shape)
 
     clf = KerasClassifier(
         GFC_triu_net_avg,
@@ -57,8 +58,8 @@ for c in ['Valence', 'Arousal', 'Dominance', 'Liking']:
         
         #model hyperparameters
         nb_classes=num_class, 
-        Chans = x_train.shape[1], 
-        Samples = x_train.shape[2],
+        Chans = x_train.shape[0], 
+        Samples = x_train.shape[1],
         dropoutRate=0.5,
         l1 = 0, l2 = 0,
         filters=2, maxnorm=2.0,maxnorm_last_layer=0.5,
@@ -92,12 +93,12 @@ for c in ['Valence', 'Arousal', 'Dominance', 'Liking']:
     cv.fit(x_train,y_train)
     
     # best score
-    print('Subject',sbj,'Accuracy',cv.best_score_,'elapsed time',time()-t)
+    print('Accuracy',cv.best_score_)
     print('---------')
     
     cv.cv_results_['best_index_']=cv.best_index_
     
     #########
-    cv.best_estimator_.model_.save_weights(f'{experiment_config["path"]}Model_{experiment_config["experiment"]}_{experiment_config["model_name"]}_sujeto_{sbj}_'+experiment_config["data_set"]+'_4_40_weights.h5')
-    with open(experiment_config["path"]+'Results_'+experiment_config["experiment"]+'_'+experiment_config["model_name"]+'_sujeto_'+str(sbj)+'_'+experiment_config["data_set"]+'_4_40.p','wb') as f:
+    cv.best_estimator_.model_.save_weights(f'{experiment_config["path"]}Model_{experiment_config["experiment"]}_{experiment_config["model_name"]}_'+experiment_config["data_set"]+'_4_40_weights.h5')
+    with open(experiment_config["path"]+'Results_'+experiment_config["experiment"]+'_'+experiment_config["model_name"]+'_sujeto_'+'_'+experiment_config["data_set"]+'_4_40.p','wb') as f:
         pickle.dump(cv.cv_results_,f)     

@@ -56,7 +56,10 @@ def prepare_experiment(folds, epochs_train, save_folder, data_set = 'DEAP'):
         "path": PATH
     }
 
-    os.mkdir(f'{PATH}')
+    try:
+        os.mkdir(f'{PATH}')
+    except:
+        print('Folder already exist')
 
     return experiment_dict
 
