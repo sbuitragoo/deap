@@ -4,7 +4,7 @@ from scipy import signal
 from db_manager import DEAP_Manager
 
 def data_preprocessing():
-    dm = DEAP_Manager()
+    dm = DEAP_Manager("../../DEAP")
     subjects = range(33)
 
     # Load every subject data to subjects dict
@@ -22,8 +22,7 @@ def data_preprocessing():
         for trial in range(subject_data.shape[0]):
             filtered_signals[f"subject{subject}"][trial, :, :] = signal.sosfilt(bp_filter, subject_data[trial, :, :])
 
-
-if __name__ == "__main__":
+def label_preprocessing():
     # Read labels
     labels = pd.read_csv('labels.csv')
 
@@ -36,3 +35,5 @@ if __name__ == "__main__":
     # Save new labels to a csv file
     labels.to_csv('binary_labels.csv')
 
+if __name__ == "__main__":
+    pass
