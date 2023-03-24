@@ -47,8 +47,8 @@ def label_preprocessing():
     # Save new labels to a csv file
     labels.to_csv('binary_labels.csv')
 
-def pre_process():
-    dm = DEAP_Manager("../../DEAP")
+def pre_process(db_path: str):
+    dm = DEAP_Manager(db_path)
     subjects = np.arange(1,33,1)
 
     # Load every subject data to subjects dict
