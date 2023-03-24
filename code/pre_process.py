@@ -62,7 +62,7 @@ def pre_process(db_path: str):
     
     print("Sample shape:", cut_data[f"subject{1}"].shape)
 
-    filtered_data = filter_data(dm, subjects, 4, 45)
+    filtered_data = filter_data(cut_data, subjects, 4, 45)
     
     return filtered_data
 
