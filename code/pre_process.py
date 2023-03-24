@@ -31,7 +31,9 @@ def filter_data(input_data, subjects: List[int], wl: int, wh: int):
         filtered_signals[f"subject{subject}"] = np.zeros_like(subject_data)
         print(f"Starting filtering for subject {subject}")
         for trial in range(subject_data.shape[0]):
-            filtered_signals[f"subject{subject}"][trial, :, :] = signal.sosfilt(bp_filter, subject_data[trial, :, :])
+            for ch in range(subject_data.shape[1]):
+                filtered_signals[f"subject{subject}"][trial, ch, :] = signal.sosfilt(bp_filter, subject_data[trial, ch, :])
+
     print(f"Finished data filtering!")
     print(f"Output data shape for subject: {filtered_signals[f'subject{1}'].shape}")
     print(f"Filtered data sample: {filtered_signals[f'subject{1}'][0, :, :]}")
