@@ -16,6 +16,7 @@ def get_data_cut(dm: DEAP_Manager, subjects: Array[int], seconds: int):
         cut_signal[f"subject{subject}"] = np.zeros((subject_data.shape[0], subject_data.shape[1], subject_data.shape[2] - cut_range))
         for trial in range(subject_data.shape[0]):
             cut_signal[f"subject{subject}"][trial, :, :] = subject_data[trial, :, cut_range:]
+    print(f"Data successfully cut!\nTotal of seconds of the new data: {cut_signal['subject1'].shape[2] / fs}")
     return cut_signal
 
 def filter_data(input_data, subjects: List[int], wl: int, wh: int):
@@ -31,7 +32,9 @@ def filter_data(input_data, subjects: List[int], wl: int, wh: int):
         print(f"Starting filtering for subject {subject}")
         for trial in range(subject_data.shape[0]):
             filtered_signals[f"subject{subject}"][trial, :, :] = signal.sosfilt(bp_filter, subject_data[trial, :, :])
-    
+    print(f"Finished data filtering!")
+    print(f"Output data shape for subject: {filtered_signals[f'subject{1}'].shape}")
+    print(f"Filtered data sample: {filtered_signals[f'subject{1}'][0, :, :]}")
     return filtered_signals
 
 def label_preprocessing():
@@ -57,10 +60,9 @@ def pre_process(db_path: str):
 
     cut_data = get_data_cut(dm, subjects, 3)
     
-    print(cut_data)
-    print(cut_data[f"subject{1}"].shape)
+    print("Sample shape:", cut_data[f"subject{1}"].shape)
 
-    # filtered_data = filter_data(dm, subjects, 4, 45)
+    filtered_data = filter_data(dm, subjects, 4, 45)
 
 if __name__ == "__main__":
     pass
