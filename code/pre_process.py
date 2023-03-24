@@ -13,10 +13,10 @@ def get_data_cut(dm: DEAP_Manager, subjects: Array[int], seconds: int):
         print(f"Starting cut for subject {subject}")
         subject_data = dm.get_data_for_subject(subject)
         cut_range = seconds * fs
-        cut_signal[f"subject{subject}"] = np.zeros((subject_data.shape[0], subject_data.shape[1], subject_data.shape[2] - cut_range))
+        cut_signal[f"subject{subject}"] = np.zeros((subject_data.shape[0], 32, subject_data.shape[2] - cut_range))
         for trial in range(subject_data.shape[0]):
-            cut_signal[f"subject{subject}"][trial, :, :] = subject_data[trial, :, cut_range:]
-    print(f"Data successfully cut!\nTotal of seconds of the new data: {cut_signal['subject1'].shape[2] / fs}")
+            cut_signal[f"subject{subject}"][trial, :, :] = subject_data[trial, :33, cut_range:]
+    print(f"Data successfully cut!\nTotal of seconds of the new data: {cut_signal['subject1'].shape[2] / fs}\nTotal of channels: {cut_signal.shape[1]}")
     return cut_signal
 
 def filter_data(input_data, subjects: List[int], wl: int, wh: int):
@@ -64,9 +64,10 @@ def pre_process(db_path: str):
     
     print("Sample shape:", cut_data[f"subject{1}"].shape)
 
-    filtered_data = filter_data(cut_data, subjects, 4, 45)
+    # How the data_preprocessed_python provided by DEAP owners already has been filtered between 4 and 45 Hz, this step is omitted 
+    # filtered_data = filter_data(cut_data, subjects, 4, 45)
     
-    return filtered_data
+    return cut_data
 
 if __name__ == "__main__":
     pass
