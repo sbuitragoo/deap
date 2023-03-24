@@ -1,26 +1,38 @@
+from ctypes import Array
+from typing import List
 import numpy as np
 import pandas as pd
 from scipy import signal
 from db_manager import DEAP_Manager
 
-def data_preprocessing():
-    dm = DEAP_Manager("../../DEAP")
-    subjects = range(33)
-
-    # Load every subject data to subjects dict
+def get_data_cut(dm: DEAP_Manager, subjects: Array[int], seconds: int):
+    fs = 128
+    cut_signal = {}
+    print(f"Starting data cut of {seconds} seconds for a total of {subjects.shape[0]} subjecs")
     for subject in subjects:
-        dm.get_file_for_subject(subject)
-    
+        print(f"Starting cut for subject {subject}")
+        subject_data = dm.get_data_for_subject(subject)
+        cut_range = seconds * fs
+        cut_signal[f"subject{subject}"] = np.zeros((subject_data.shape[0], subject_data.shape[1], subject_data.shape[2] - cut_range))
+        for trial in range(subject_data.shape[0]):
+            cut_signal[f"subject{subject}"][trial, :, :] = subject_data[trial, :, cut_range:]
+    return cut_signal
+
+def filter_data(input_data, subjects: List[int], wl: int, wh: int):
     # Filter between 4 and 45 Hz
-    bp_filter = signal.butter(15, [4,45], 'bp', fs=128, output='sos')
+    bp_filter = signal.butter(15, [wl,wh], 'bp', fs=128, output='sos')
     
     filtered_signals = {}
 
+    print(f"Starting data filtering...")
     for subject in subjects:
-        subject_data = dm.get_data_for_subject(subject)
+        subject_data = input_data[f"subject{subject}"]
         filtered_signals[f"subject{subject}"] = np.zeros_like(subject_data)
+        print(f"Starting filtering for subject {subject}")
         for trial in range(subject_data.shape[0]):
             filtered_signals[f"subject{subject}"][trial, :, :] = signal.sosfilt(bp_filter, subject_data[trial, :, :])
+    
+    return filtered_signals
 
 def label_preprocessing():
     # Read labels
@@ -34,6 +46,21 @@ def label_preprocessing():
 
     # Save new labels to a csv file
     labels.to_csv('binary_labels.csv')
+
+def pre_process():
+    dm = DEAP_Manager("../../DEAP")
+    subjects = np.arange(1,33,1)
+
+    # Load every subject data to subjects dict
+    for subject in subjects:
+        dm.get_file_for_subject(subject)
+
+    cut_data = get_data_cut(dm, subjects, 3)
+    
+    print(cut_data)
+    print(cut_data[f"subject{1}"].shape)
+
+    # filtered_data = filter_data(dm, subjects, 4, 45)
 
 if __name__ == "__main__":
     pass

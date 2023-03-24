@@ -22,6 +22,7 @@ class DEAP_Manager:
         
 
     def get_file_for_subject(self, sub):
+        print(f"Starting file reading for subject {sub}")
         with open(f'{self.db_path}/s'+ (('0' + str(sub)) if sub < 10 else str(sub)) + '.dat', 'rb') as file:
             subject = pickle.load(file, encoding='latin1')
             
