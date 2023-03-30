@@ -54,7 +54,7 @@ def apply_window(input_data, subjects):
         post_processed_data[f"subject{subject}"] = np.zeros((subject_data.shape[0], subject_data.shape[1], int(subject_data.shape[2] / 2) + window_size*2))
         for trial in range(subject_data.shape[0]):
             for i in range(int(post_processed_data[f"subject{subject}"].shape[2] / window_size)):
-                print(f"Making windowing of trial {trial} and second: {i}")
+                # print(f"Making windowing of trial {trial} and second: {i}")
                 if (i == 0):
                     post_processed_data[f"subject{subject}"][trial, :, i:(i+1)*window_size] = subject_data[trial, :, i:(i+1)*window_size]
                 else:
@@ -84,10 +84,10 @@ def split_trial_into_stack(input_data, subjects):
         for new_trail in range(splitted_data[f"subject{subject}"].shape[0]):
             print(f"New trail: {new_trail}")
             if (new_trail == 0):
-                print(f"Out shape: {new_trail,(new_trail+1)*window_size}")
+                # print(f"Out shape: {new_trail,(new_trail+1)*window_size}")
                 splitted_data[f"subject{subject}"][new_trail, :, :window_size] = flattened_trials[0, :, new_trail:(new_trail+1)*window_size]
             else:
-                print(f"Out shape: {new_trail*window_size,(new_trail*window_size)+window_size}")
+                # print(f"Out shape: {new_trail*window_size,(new_trail*window_size)+window_size}")
                 splitted_data[f"subject{subject}"][new_trail, :, :window_size] = flattened_trials[0, :, new_trail*window_size:(new_trail*window_size)+window_size]
                     
     print(f"Finished trail splitting successfully with a new size per subject of: {splitted_data[f'subject{subject}'].shape}")
@@ -136,7 +136,7 @@ def pre_process(db_path: str):
 
     splitted_data = split_trial_into_stack(sampled_data, subjects)
 
-    normalized_data = normalize(splitted_data)
+    normalized_data = normalize(splitted_data, subjects)
 
     print(f"Final shape: {normalized_data[f'subject{1}'].shape}")
 
