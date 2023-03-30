@@ -80,9 +80,7 @@ def split_trial_into_stack(input_data, subjects):
             else:
                 flattened_trials[0, :,original_trail*subject_data.shape[2]:(original_trail*subject_data.shape[2])+subject_data.shape[2]] = subject_data[original_trail, :, :]
 
-        print(f"Splitting original trial {original_trail}")
         for new_trail in range(splitted_data[f"subject{subject}"].shape[0]):
-            print(f"New trail: {new_trail}")
             if (new_trail == 0):
                 # print(f"Out shape: {new_trail,(new_trail+1)*window_size}")
                 splitted_data[f"subject{subject}"][new_trail, :, :window_size] = flattened_trials[0, :, new_trail:(new_trail+1)*window_size]
@@ -136,14 +134,14 @@ def pre_process(db_path: str):
 
     splitted_data = split_trial_into_stack(sampled_data, subjects)
 
-    normalized_data = normalize(splitted_data, subjects)
+    # normalized_data = normalize(splitted_data, subjects)
 
-    print(f"Final shape: {normalized_data[f'subject{1}'].shape}")
+    print(f"Final shape: {splitted_data[f'subject{1}'].shape}")
 
     # How the data_preprocessed_python provided by DEAP owners already has been filtered between 4 and 45 Hz, this step is omitted 
     # filtered_data = filter_data(cut_data, subjects, 4, 45)
     
-    return normalized_data
+    return splitted_data
 
 if __name__ == "__main__":
     pass
