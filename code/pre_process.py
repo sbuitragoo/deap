@@ -15,7 +15,7 @@ def get_data_cut(dm: DEAP_Manager, subjects: Array[int], seconds: int):
         cut_range = seconds * fs
         cut_signal[f"subject{subject}"] = np.zeros((subject_data.shape[0], 32, subject_data.shape[2] - cut_range))
         for trial in range(subject_data.shape[0]):
-            cut_signal[f"subject{subject}"][trial, :, :] = subject_data[trial, :33, cut_range:]
+            cut_signal[f"subject{subject}"][trial, :, :] = subject_data[trial, :, cut_range:]
     print(f"Data successfully cut!\nTotal of seconds of the new data: {cut_signal['subject1'].shape[2] / fs}\nTotal of channels: {cut_signal.shape[1]}")
     return cut_signal
 
