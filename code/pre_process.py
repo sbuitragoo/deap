@@ -50,11 +50,11 @@ def apply_window(input_data, subjects):
         subject_data = input_data[f"subject{subject}"]
         post_processed_data[f"subject{subject}"] = np.zeros((subject_data.shape[0], subject_data.shape[1], int(subject_data.shape[2] / 2)))
         for trial in range(subject_data.shape[0]):
-            for i in range(int(post_processed_data[f"subject{subject}"].shape[2] / window_size)):
+            for i in range(int(post_processed_data[f"subject{subject}"].shape[2] / window_size) + 2):
                 if (i == 0):
-                    post_processed_data[f"subject{subject}"][trial, :, i:i*window_size] = subject_data[trial, :, i:i*window_size]
+                    post_processed_data[f"subject{subject}"][trial, :, i:(i+1)*window_size] = subject_data[trial, :, i:(i+1)*window_size]
                 else:
-                    post_processed_data[f"subject{subject}"][trial, :, i:i*window_size] = subject_data[trial, :, int(i*window_size*overlapping):int(i*window_size*overlapping)+window_size]
+                    post_processed_data[f"subject{subject}"][trial, :, i*window_size:(i*window_size)+window_size] = subject_data[trial, :, int(i*window_size*overlapping):int(i*window_size*overlapping)+window_size]
     print(f"Finished windowing")
     return post_processed_data
 
