@@ -76,7 +76,7 @@ def split_trial_into_stack(input_data, subjects):
         flattened_trials = np.zeros((1,int(subject_data.shape[0]*(subject_data.shape[2] / window_size))))
         for original_trail in range(subject_data.shape[0]):
             if original_trail == 0:
-                flattened_trials[:,original_trail:original_trail*subject_data.shape[2]] = subject_data[original_trail, :, :]
+                flattened_trials[:,original_trail:(original_trail+1)*subject_data.shape[2]] = subject_data[original_trail, :, :]
             else:
                 flattened_trials[:,original_trail*subject_data.shape[2]:(original_trail*subject_data.shape[2])+subject_data.shape[2]] = subject_data[original_trail, :, :]
 
