@@ -54,7 +54,7 @@ def apply_window(input_data, subjects):
                 if (i == 0):
                     post_processed_data[f"subject{subject}"][trial, :, i:i*window_size] = subject_data[trial, :, i:i*window_size]
                 else:
-                    post_processed_data[f"subject{subject}"][trial, :, i:i*window_size] = subject_data[trial, :, i*window_size*overlapping:(i*window_size*overlapping)+window_size]
+                    post_processed_data[f"subject{subject}"][trial, :, i:i*window_size] = subject_data[trial, :, int(i*window_size*overlapping):int(i*window_size*overlapping)+window_size]
     print(f"Finished windowing")
     return post_processed_data
 
