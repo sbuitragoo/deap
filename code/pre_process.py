@@ -93,7 +93,18 @@ def split_trial_into_stack(input_data, subjects):
     print(f"Finished trail splitting successfully with a new size per subject of: {splitted_data[f'subject{subject}'].shape}")
     print("#---------------------------------------------------------------------------------------------------------------------#")
     return splitted_data
-            
+
+def normalize(input_data, subjects):
+    normalized_data = {}
+    max_value = 0
+    for subject in subjects:
+        subject_data = input_data[f"subject{subject}"]
+        max_value = np.max(subject_data) if max_value < np.max(subject_data) else max_value
+    
+    for subject in subjects:
+        normalized_data[f"subject{subject}"] = subject_data/max_value
+
+    return normalized_data
 
 
 def label_preprocessing():
@@ -125,12 +136,14 @@ def pre_process(db_path: str):
 
     splitted_data = split_trial_into_stack(sampled_data, subjects)
 
-    print(f"Final shape: {splitted_data[f'subject{1}'].shape}")
+    normalized_data = normalize(splitted_data)
+
+    print(f"Final shape: {normalized_data[f'subject{1}'].shape}")
 
     # How the data_preprocessed_python provided by DEAP owners already has been filtered between 4 and 45 Hz, this step is omitted 
     # filtered_data = filter_data(cut_data, subjects, 4, 45)
     
-    return splitted_data
+    return normalized_data
 
 if __name__ == "__main__":
     pass
