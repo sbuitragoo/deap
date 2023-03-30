@@ -73,12 +73,12 @@ def split_trial_into_stack(input_data, subjects):
         subject_data = input_data[f"subject{subject}"]
         splitted_data[f"subject{subject}"] = np.zeros((int(subject_data.shape[0]*(subject_data.shape[2] / window_size)), subject_data.shape[1], window_size))
         print(f"Starting spliting for Subject {subject}")
-        flattened_trials = np.zeros((1,int(subject_data.shape[0]*(subject_data.shape[2] / window_size))))
+        flattened_trials = np.zeros((1,subject_data.shape[1],int(subject_data.shape[0]*(subject_data.shape[2] / window_size))))
         for original_trail in range(subject_data.shape[0]):
             if original_trail == 0:
-                flattened_trials[:,original_trail:(original_trail+1)*subject_data.shape[2]] = subject_data[original_trail, :, :]
+                flattened_trials[0, :,original_trail:(original_trail+1)*subject_data.shape[2]] = subject_data[original_trail, :, :]
             else:
-                flattened_trials[:,original_trail*subject_data.shape[2]:(original_trail*subject_data.shape[2])+subject_data.shape[2]] = subject_data[original_trail, :, :]
+                flattened_trials[0, :,original_trail*subject_data.shape[2]:(original_trail*subject_data.shape[2])+subject_data.shape[2]] = subject_data[original_trail, :, :]
 
         print(f"Splitting original trial {original_trail}")
         for new_trail in range(splitted_data[f"subject{subject}"].shape[0]):
@@ -87,11 +87,8 @@ def split_trial_into_stack(input_data, subjects):
                 print(f"Out shape: {new_trail,(new_trail+1)*window_size}")
                 splitted_data[f"subject{subject}"][new_trail, :, :window_size] = flattened_trials[0, :, new_trail:(new_trail+1)*window_size]
             else:
-                if ((new_trail*window_size)+window_size > subject_data.shape[2]):
-                    pass
-                else:
-                    print(f"Out shape: {new_trail*window_size,(new_trail*window_size)+window_size}")
-                    splitted_data[f"subject{subject}"][new_trail, :, :window_size] = flattened_trials[0, :, new_trail*window_size:(new_trail*window_size)+window_size]
+                print(f"Out shape: {new_trail*window_size,(new_trail*window_size)+window_size}")
+                splitted_data[f"subject{subject}"][new_trail, :, :window_size] = flattened_trials[0, :, new_trail*window_size:(new_trail*window_size)+window_size]
                     
     print(f"Finished trail splitting successfully with a new size per subject of: {splitted_data[f'subject{subject}'].shape}")
     print("---------------------------------------####---------------------------------------")
