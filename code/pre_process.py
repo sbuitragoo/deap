@@ -8,7 +8,7 @@ from db_manager import DEAP_Manager
 def get_data_cut(dm: DEAP_Manager, subjects: Array[int], seconds: int):
     fs = 128
     cut_signal = {}
-    print("---------------------------------------####---------------------------------------")
+    print("#---------------------------------------------------------------------------------------------------------------------#")
     print(f"Starting data cut of {seconds} seconds for a total of {subjects.shape[0]} subjecs")
     for subject in subjects:
         print(f"Starting cut for subject {subject}")
@@ -26,7 +26,7 @@ def filter_data(input_data, subjects: List[int], wl: int, wh: int):
     
     filtered_signals = {}
 
-    print("---------------------------------------####---------------------------------------")
+    print("#---------------------------------------------------------------------------------------------------------------------#")
     print(f"Starting data filtering...")
     for subject in subjects:
         subject_data = input_data[f"subject{subject}"]
@@ -46,7 +46,7 @@ def apply_window(input_data, subjects):
     window_size = 128
     overlapping = 0.5
 
-    print("---------------------------------------####---------------------------------------")
+    print("#---------------------------------------------------------------------------------------------------------------------#")
     print(f"Starting windowing with window size of {window_size} and overlapping of {overlapping*100}%")
 
     for subject in subjects:
@@ -66,14 +66,14 @@ def split_trial_into_stack(input_data, subjects):
     splitted_data = {}
     window_size = 128
 
-    print("---------------------------------------####---------------------------------------")
+    print("#---------------------------------------------------------------------------------------------------------------------#")
     print(f"Starting trail splitting for each subject, begining with a shape per subject of: {input_data[f'subject{1}'].shape}")
 
     for subject in subjects:
         subject_data = input_data[f"subject{subject}"]
         splitted_data[f"subject{subject}"] = np.zeros((int(subject_data.shape[0]*(subject_data.shape[2] / window_size)), subject_data.shape[1], window_size))
         print(f"Starting spliting for Subject {subject}")
-        flattened_trials = np.zeros((1,subject_data.shape[1],int(subject_data.shape[0]*(subject_data.shape[2] / window_size))))
+        flattened_trials = np.zeros((1,subject_data.shape[1],int(subject_data.shape[0]*subject_data.shape[2])))
         for original_trail in range(subject_data.shape[0]):
             if original_trail == 0:
                 flattened_trials[0, :,original_trail:(original_trail+1)*subject_data.shape[2]] = subject_data[original_trail, :, :]
@@ -91,7 +91,7 @@ def split_trial_into_stack(input_data, subjects):
                 splitted_data[f"subject{subject}"][new_trail, :, :window_size] = flattened_trials[0, :, new_trail*window_size:(new_trail*window_size)+window_size]
                     
     print(f"Finished trail splitting successfully with a new size per subject of: {splitted_data[f'subject{subject}'].shape}")
-    print("---------------------------------------####---------------------------------------")
+    print("#---------------------------------------------------------------------------------------------------------------------#")
     return splitted_data
             
 
