@@ -50,7 +50,7 @@ def apply_window(input_data, subjects):
         subject_data = input_data[f"subject{subject}"]
         post_processed_data[f"subject{subject}"] = np.zeros((subject_data.shape[0], subject_data.shape[1], int(subject_data.shape[2] / 2)))
         for trial in range(subject_data.shape[0]):
-            for i in range(post_processed_data[f"subject{subject}"].shape[2] / window_size):
+            for i in range(int(post_processed_data[f"subject{subject}"].shape[2] / window_size)):
                 if (i == 0):
                     post_processed_data[f"subject{subject}"][trial, :, i:i*window_size] = subject_data[trial, :, i:i*window_size]
                 else:
