@@ -18,7 +18,6 @@ def get_data_cut(dm: DEAP_Manager, subjects: Array[int], seconds: int):
         for trial in range(subject_data.shape[0]):
             cut_signal[f"subject{subject}"][trial, :, :] = subject_data[trial, 32, cut_range:]
     print(f"Data successfully cut!\nTotal of seconds of the new data: {cut_signal['subject1'].shape[2] / fs}\nTotal of channels: {cut_signal['subject1'].shape[1]}")
-    print("---------------------------------------####---------------------------------------")
     return cut_signal
 
 def filter_data(input_data, subjects: List[int], wl: int, wh: int):
@@ -40,7 +39,6 @@ def filter_data(input_data, subjects: List[int], wl: int, wh: int):
     print(f"Finished data filtering!")
     print(f"Output data shape for subject: {filtered_signals[f'subject{1}'].shape}")
     print(f"Filtered data sample: {filtered_signals[f'subject{1}'][0, :, :]}")
-    print("---------------------------------------####---------------------------------------")
     return filtered_signals
 
 def apply_window(input_data, subjects):
@@ -58,15 +56,10 @@ def apply_window(input_data, subjects):
             for i in range(int(post_processed_data[f"subject{subject}"].shape[2] / window_size)):
                 print(f"Making windowing of trial {trial} and second: {i}")
                 if (i == 0):
-                    print(f"In Data: {i, (i+1)*window_size}")
-                    print(f"Out Data: {i,(i+1)*window_size}")
                     post_processed_data[f"subject{subject}"][trial, :, i:(i+1)*window_size] = subject_data[trial, :, i:(i+1)*window_size]
                 else:
-                    print(f"In Data: {i*window_size,(i*window_size)+window_size}")
-                    print(f"Out Data: {int(i*window_size*overlapping),int(i*window_size*overlapping)+window_size}")
                     post_processed_data[f"subject{subject}"][trial, :, i*window_size:(i*window_size)+window_size] = subject_data[trial, :, int(i*window_size*overlapping):int(i*window_size*overlapping)+window_size]
     print(f"Finished windowing")
-    print("---------------------------------------####---------------------------------------")
     return post_processed_data
 
 def split_trial_into_stack(input_data, subjects):
@@ -78,15 +71,18 @@ def split_trial_into_stack(input_data, subjects):
 
     for subject in subjects:
         subject_data = input_data[f"subject{subject}"]
-        splitted_data[f"subject{subject}"] = np.zeros((subject_data.shape[0]*32, subject_data.shape[1], subject_data.shape[2]))
+        splitted_data[f"subject{subject}"] = np.zeros((subject_data.shape[0]*32, subject_data.shape[1], window_size))
         print(f"Starting spliting for Subject {subject}")
-        for original_trial in range(subject_data.shape[0]):
-            print(f"Splitting original trial {original_trial}")
-            for new_trial in range(splitted_data[f"subject{subject}"].shape[0]):
-                if (new_trial == 0):
-                    splitted_data[f"subject{subject}"][new_trial, :, :window_size] = subject_data[original_trial, :, new_trial:(new_trial+1)*window_size]
+        for original_trail in range(subject_data.shape[0]):
+            print(f"Splitting original trial {original_trail}")
+            for new_trail in range(splitted_data[f"subject{subject}"].shape[0]):
+                print(f"New trail: {new_trail}")
+                if (new_trail == 0):
+                    print(f"Out shape: {new_trail,(new_trail+1)*window_size}")
+                    splitted_data[f"subject{subject}"][new_trail, :, :window_size] = subject_data[original_trail, :, new_trail:(new_trail+1)*window_size]
                 else:
-                    splitted_data[f"subject{subject}"][new_trial, :, :window_size] = subject_data[original_trial, :, new_trial*window_size:(new_trial*window_size)+window_size]
+                    print(f"Out shape: {new_trail*window_size,(new_trail*window_size)+window_size}")
+                    splitted_data[f"subject{subject}"][new_trail, :, :window_size] = subject_data[original_trail, :, new_trail*window_size:(new_trail*window_size)+window_size]
 
     print(f"Finished trail splitting successfully with a new size per subject of: {splitted_data[f'subject{subject}'].shape}")
     print("---------------------------------------####---------------------------------------")
