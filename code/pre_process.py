@@ -110,7 +110,7 @@ def pre_process(db_path: str):
     # How the data_preprocessed_python provided by DEAP owners already has been filtered between 4 and 45 Hz, this step is omitted 
     # filtered_data = filter_data(cut_data, subjects, 4, 45)
     
-    return cut_data
+    return splitted_data
 
 if __name__ == "__main__":
     pass
