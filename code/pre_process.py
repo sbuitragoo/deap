@@ -48,7 +48,7 @@ def apply_window(input_data, subjects):
 
     for subject in subjects:
         subject_data = input_data[f"subject{subject}"]
-        post_processed_data[f"subject{subject}"] = np.zeros((subject_data.shape[0], subject_data.shape[1], int(subject_data.shape[2] / 2)))
+        post_processed_data[f"subject{subject}"] = np.zeros((subject_data.shape[0], subject_data.shape[1], int(subject_data.shape[2] / 2) + window_size*2))
         for trial in range(subject_data.shape[0]):
             for i in range(int(post_processed_data[f"subject{subject}"].shape[2] / window_size) + 2):
                 print(f"Making windowing of trial {trial} and second: {i}")
