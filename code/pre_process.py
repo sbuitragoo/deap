@@ -111,8 +111,7 @@ def normalize(input_data, subjects):
         subject_data = input_data[f"subject{subject}"]
         normalized_data[f"subject{subject}"] = np.zeros_like(subject_data)
         for trail in range(subject_data.shape[0]):
-            for ch in range(subject_data.shape[1]):
-                normalized_data[f"subject{subject}"][trail, ch, :] = subject_data[f"subject{subject}"][trail, ch, :]
+            normalized_data[f"subject{subject}"][trail, :, :] = subject_data[f"subject{subject}"][trail, :, :]
 
     print(f"Finished normalizing")
     print("#---------------------------------------------------------------------------------------------------------------------#")
