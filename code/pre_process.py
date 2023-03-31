@@ -94,13 +94,19 @@ def split_trial_into_stack(input_data, subjects):
 
 def normalize(input_data, subjects):
     normalized_data = {}
-    max_value = 0
+    max_value_per_trial_per_channel = []
     for subject in subjects:
         subject_data = input_data[f"subject{subject}"]
-        max_value = np.max(subject_data) if max_value < np.max(subject_data) else max_value
+        for trial in range(subject_data.shape[1]):
+            for ch in range(subject_data.shape[2]):
+                max_value_per_trial_per_channel.append(np.max(subject_data[trial, ch, :]))
+
+    max_value = np.max(max_value_per_trial_per_channel)
     
     for subject in subjects:
-        normalized_data[f"subject{subject}"] = subject_data/max_value
+        for trial in range(subject_data.shape[0]):
+            for ch in range(subject_data.shape[1]):
+                normalized_data[f"subject{subject}"][trial, ch, :] = subject_data[f"subject{subject}"][trial, ch, :]/max_value
 
     return normalized_data
 
@@ -134,14 +140,14 @@ def pre_process(db_path: str):
 
     splitted_data = split_trial_into_stack(sampled_data, subjects)
 
-    # normalized_data = normalize(splitted_data, subjects)
+    normalized_data = normalize(splitted_data, subjects)
 
-    print(f"Final shape: {splitted_data[f'subject{1}'].shape}")
+    print(f"Final shape: {normalized_data[f'subject{1}'].shape}")
 
     # How the data_preprocessed_python provided by DEAP owners already has been filtered between 4 and 45 Hz, this step is omitted 
     # filtered_data = filter_data(cut_data, subjects, 4, 45)
     
-    return splitted_data
+    return normalized_data
 
 if __name__ == "__main__":
     pass
