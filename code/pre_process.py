@@ -97,17 +97,20 @@ def normalize(input_data, subjects):
     max_value_per_trial_per_channel = []
     for subject in subjects:
         subject_data = input_data[f"subject{subject}"]
-        for trial in range(subject_data.shape[0]):
+        for trail in range(subject_data.shape[0]):
             for ch in range(subject_data.shape[1]):
-                max_value_per_trial_per_channel.append(np.max(subject_data[trial, ch, :]))
+                max_value_per_trial_per_channel.append(np.max(subject_data[trail, ch, :]))
 
     max_value = np.max(max_value_per_trial_per_channel)
+
+    print("Max value: ", max_value)
     
     for subject in subjects:
         subject_data = input_data[f"subject{subject}"]
-        for trial in range(subject_data.shape[0]):
+        for trail in range(subject_data.shape[0]):
             for ch in range(subject_data.shape[1]):
-                normalized_data[f"subject{subject}"][trial, ch, :] = subject_data[f"subject{subject}"][trial, ch, :]/max_value
+                print(f"Trail: {trail}, Channel: {ch}")
+                normalized_data[f"subject{subject}"][trail, ch, :] = subject_data[f"subject{subject}"][trail, ch, :]/max_value
 
     return normalized_data
 
