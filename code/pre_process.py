@@ -131,19 +131,29 @@ def label_binarization():
         labels[col] = np.where(labels[col] > 5, 1, 0)
 
     # Save new labels to a csv file
-    labels.to_csv('binary_labels.csv')
+    labels.to_csv('binary_labels.csv', index=False)
 
 def label_preprocessing():
-    column_names = ["Valence", "Arousal", "Dominance", "Liking"]
+    column_names = ["Participant_id", "Trial", "Valence", "Arousal", "Dominance", "Liking"]
     binary_labels = pd.read_csv("binary_labels.csv")
-    new_labels = np.zeros((40960, 4)) # 1280 trails x 32 subjects, 4 labels
+    new_labels = np.zeros((40960, 6)) # 1280 trails x 32 subjects, 4 labels
 
-    for label in range(len(column_names)):
-        for previews_trial in range(40*32): # 40 trails x 32 subjects 
-            for trail in range(1280): # 40 trails x 32 seconds per trial
-                new_labels[trail, label] = binary_labels[column_names[label]][previews_trial]
+    print(f"Starting label mapping...")
+
+    for index, label in enumerate(column_names):
+        for previous_trail in range(40*32): # 40 trails x 32 subjects 
+            if previous_trail == 0:
+                new_labels[previous_trail:(previous_trail+1)*32, index] = binary_labels[label].iloc[previous_trail].astype(int)
+            else:
+                new_labels[previous_trail*32:(previous_trail+1)*32, index] = binary_labels[label].iloc[previous_trail].astype(int)
     
-    print(f"New labels: {new_labels}")
+    print(f"Label mapping finished!")
+
+    new_labels_df = pd.DataFrame(new_labels, columns=column_names, dtype="Int64")
+
+    print(f"Starting file writing...")
+    new_labels_df.to_csv('final_labels.csv', index=False)
+    print(f"File successfully written!")
 
 def pre_process(db_path: str):
     dm = DEAP_Manager(db_path)
@@ -171,4 +181,4 @@ def pre_process(db_path: str):
     return normalized_data
 
 if __name__ == "__main__":
-    pass
+    label_preprocessing()
