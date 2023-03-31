@@ -139,8 +139,8 @@ def label_preprocessing():
     new_labels = np.zeros((40960, 4)) # 1280 trails x 32 subjects, 4 labels
 
     for label in range(len(column_names)):
-        for previews_trial in range(40*32): #40 trails x 
-            for trail in range(1280):
+        for previews_trial in range(40*32): # 40 trails x 32 subjects 
+            for trail in range(1280): # 40 trails x 32 seconds per trial
                 new_labels[trail, label] = binary_labels[column_names[label]][previews_trial]
     
     print(f"New labels: {new_labels}")
