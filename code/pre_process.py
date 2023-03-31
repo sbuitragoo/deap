@@ -97,8 +97,8 @@ def normalize(input_data, subjects):
     max_value_per_trial_per_channel = []
     for subject in subjects:
         subject_data = input_data[f"subject{subject}"]
-        for trial in range(subject_data.shape[1]):
-            for ch in range(subject_data.shape[2]):
+        for trial in range(subject_data.shape[0]):
+            for ch in range(subject_data.shape[1]):
                 max_value_per_trial_per_channel.append(np.max(subject_data[trial, ch, :]))
 
     max_value = np.max(max_value_per_trial_per_channel)
