@@ -110,10 +110,9 @@ def normalize(input_data, subjects):
         print(f"Normalizing data por subject {subject}")
         subject_data = input_data[f"subject{subject}"]
         normalized_data[f"subject{subject}"] = np.zeros_like(subject_data)
-        print(normalized_data[f"subject{subject}"].shape)
         for trail in range(subject_data.shape[0]):
-            print(trail)
-            normalized_data[f"subject{subject}"][trail, :, :] = subject_data[f"subject{subject}"][trail, :, :]/max_value
+            for ch in range(subject_data.shape[1]):
+                normalized_data[f"subject{subject}"][trail, ch, :] = subject_data[trail, ch, :]/max_value
 
     print(f"Finished normalizing")
     print("#---------------------------------------------------------------------------------------------------------------------#")
@@ -121,7 +120,7 @@ def normalize(input_data, subjects):
     return normalized_data
 
 
-def label_preprocessing():
+def label_binarization():
     # Read labels
     labels = pd.read_csv('labels.csv')
 
@@ -133,6 +132,9 @@ def label_preprocessing():
 
     # Save new labels to a csv file
     labels.to_csv('binary_labels.csv')
+
+def label_preprocessing():
+    pass
 
 def pre_process(db_path: str):
     dm = DEAP_Manager(db_path)
