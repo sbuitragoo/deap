@@ -3,6 +3,7 @@ from typing import List
 import numpy as np
 import pandas as pd
 from scipy import signal
+import argparse
 from db_manager import DEAP_Manager
 
 def get_data_cut(dm: DEAP_Manager, subjects: Array[int], seconds: int):
@@ -181,4 +182,15 @@ def pre_process(db_path: str):
     return normalized_data
 
 if __name__ == "__main__":
-    label_preprocessing()
+    parser = argparse.ArgumentParser()
+    subparser = parser.add_subparsers(dest='command')
+    params = subparser.add_parser('params')
+    params.add_argument('--db', type=str, required=True,
+                        help="Path to the data base")
+    
+    arguments = parser.parse_args()
+
+    if arguments.command == "params":
+        pre_processed_data = pre_process(arguments.db)
+    else:
+        pre_processed_data = pre_process("../../DEAP")

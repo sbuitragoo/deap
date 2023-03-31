@@ -57,14 +57,6 @@ Where **DEAP** contains the data and **deap** represents this repository.
 
 ### 4. Start Working:
 
-* If you want to make feature extraction again by yourself:
+* To make data pre processing:
 
-        sudo rm -r eeg_features
-
-    Then:
-
-        python3 code/eeg_feature_extraction.py
-
-* When features are ready, run:
-
-        python3 code/feature_importance.py
+        python3 code/pre_process.py params --db PATH_TO_DB
