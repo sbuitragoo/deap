@@ -14,9 +14,9 @@ def get_data_cut(dm: DEAP_Manager, subjects: Array[int], seconds: int):
         print(f"Starting cut for subject {subject}")
         subject_data = dm.get_data_for_subject(subject)
         cut_range = seconds * fs
-        cut_signal[f"subject{subject}"] = np.zeros((subject_data.shape[0], subject_data.shape[1], subject_data.shape[2] - cut_range))
+        cut_signal[f"subject{subject}"] = np.zeros((subject_data.shape[0], 32, subject_data.shape[2] - cut_range))
         for trial in range(subject_data.shape[0]):
-            cut_signal[f"subject{subject}"][trial, :, :] = subject_data[trial, :, cut_range:]
+            cut_signal[f"subject{subject}"][trial, :, :] = subject_data[trial, :32, cut_range:]
     print(f"Data successfully cut!\nTotal of seconds of the new data: {cut_signal['subject1'].shape[2] / fs}\nTotal of channels: {cut_signal['subject1'].shape[1]}")
     return cut_signal
 
@@ -93,6 +93,7 @@ def split_trial_into_stack(input_data, subjects):
     return splitted_data
 
 def normalize(input_data, subjects):
+    print("Starting normalizing...")
     normalized_data = {}
     max_value_per_trial_per_channel = []
     for subject in subjects:
@@ -106,11 +107,15 @@ def normalize(input_data, subjects):
     print("Max value: ", max_value)
     
     for subject in subjects:
+        print(f"Normalizing data por subject {subject}")
         subject_data = input_data[f"subject{subject}"]
+        normalized_data[f"subject{subject}"] = np.zeros_like(subject_data)
         for trail in range(subject_data.shape[0]):
             for ch in range(subject_data.shape[1]):
-                print(f"Trail: {trail}, Channel: {ch}")
                 normalized_data[f"subject{subject}"][trail, ch, :] = subject_data[f"subject{subject}"][trail, ch, :]/max_value
+
+    print(f"Finished normalizing")
+    print("#---------------------------------------------------------------------------------------------------------------------#")
 
     return normalized_data
 
