@@ -134,7 +134,16 @@ def label_binarization():
     labels.to_csv('binary_labels.csv')
 
 def label_preprocessing():
-    pass
+    column_names = ["Valence", "Arousal", "Dominance", "Liking"]
+    binary_labels = pd.read_csv("binary_labels.csv")
+    new_labels = np.zeros((40960, 4)) # 1280 trails x 32 subjects, 4 labels
+
+    for label in range(len(column_names)):
+        for previews_trial in range(40*32): #40 trails x 
+            for trail in range(1280):
+                new_labels[trail, label] = binary_labels[column_names[label]][previews_trial]
+    
+    print(f"New labels: {new_labels}")
 
 def pre_process(db_path: str):
     dm = DEAP_Manager(db_path)
