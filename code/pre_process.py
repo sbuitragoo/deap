@@ -112,7 +112,7 @@ def normalize(input_data, subjects):
         normalized_data[f"subject{subject}"] = np.zeros_like(subject_data)
         for trail in range(subject_data.shape[0]):
             for ch in range(subject_data.shape[1]):
-                normalized_data[f"subject{subject}"][trail, ch, :] = subject_data[f"subject{subject}"][trail, ch, :]/max_value
+                normalized_data[f"subject{subject}"][trail, ch, :] = subject_data[f"subject{subject}"][trail, ch, :]
 
     print(f"Finished normalizing")
     print("#---------------------------------------------------------------------------------------------------------------------#")
