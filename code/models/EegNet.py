@@ -17,7 +17,7 @@ from utils.utils import DepthwiseConv3D, separable_conv3d
 
 def EEGNet(nb_classes, Chans = 64, Samples = 128, 
              dropoutRate = 0.5, kernLength = 64, F1 = 8, 
-             D = 2, F2 = 16, norm_rate = 0.25, dropoutType = 'Dropout', trials = 6):
+             D = 2, F2 = 16, norm_rate = 0.25, dropoutType = 'Dropout', trials = 6, data = 100):
     """ 
     Inputs:
         
@@ -44,7 +44,7 @@ def EEGNet(nb_classes, Chans = 64, Samples = 128,
         raise ValueError('dropoutType must be one of SpatialDropout2D '
                         'or Dropout, passed as a string.')
     
-    input1       = Input(shape = (trials, Chans, Samples))
+    input1       = Input(shape = (data, trials, Chans, Samples))
 
     ###################################################################
 
