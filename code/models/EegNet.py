@@ -49,7 +49,7 @@ def EEGNet(nb_classes, Chans = 64, Samples = 128,
     ###################################################################
 
     block1       = Conv3D(F1, kernel_size=(1, 3, 3), padding = 'same',
-                                input_shape = (Chans, Samples, 1),
+                                input_shape = (trials, Chans, Samples),
                                 use_bias = False, strides=(1,2,2))(input1)
     block1       = BatchNormalization()(block1)
     block1       = Activation('relu')(block1)
@@ -57,49 +57,49 @@ def EEGNet(nb_classes, Chans = 64, Samples = 128,
     ########################Inverted Residual 1########################
 
     ir1          = Conv3D(F1, (1, 3, 32), padding = 'same',
-                                input_shape = (Chans, Samples, 1),
+                                input_shape = (trials, Chans, Samples),
                                 use_bias = False, activation="relu", strides=(1,1,1))(block1)
     ir1       = DepthwiseConv3D((3,3,3), use_bias = False, 
                                 depth_multiplier = D,
                                 activation="relu",
                                 depthwise_constraint = max_norm(1.))(ir1)
     ir1          = Conv3D(F1, (1, 3, 3), padding = 'same',
-                                input_shape = (Chans, Samples, 1),
+                                input_shape = (trials, Chans, Samples),
                                 use_bias = False, activation="linear")(ir1)
     ir1          = Add()([block1, ir1])
 
     ########################Inverted Residual 2########################
 
     ir2          = Conv3D(F1, (1, 3, 32), padding = 'same',
-                                input_shape = (Chans, Samples, 1),
+                                input_shape = (trials, Chans, Samples),
                                 use_bias = False, activation="relu", strides=(1,1,1))(ir1)
     ir2       = DepthwiseConv3D((3,3,3), use_bias = False, 
                                 depth_multiplier = D,
                                 activation="relu",
                                 depthwise_constraint = max_norm(1.))(ir2)
     ir2          = Conv3D(F1, (1, kernLength), padding = 'same',
-                                input_shape = (Chans, Samples, 1),
+                                input_shape = (trials, Chans, Samples),
                                 use_bias = False, activation="linear")(ir2)
     ir2          = Add()([ir1, ir2])
 
     ########################Inverted Residual 3########################
 
     ir3          = Conv3D(F1, (1, 3, 32), padding = 'same',
-                                input_shape = (Chans, Samples, 1),
+                                input_shape = (trials, Chans, Samples),
                                 use_bias = False, activation="relu", strides=(1,1,1))(ir2)
     ir3       = DepthwiseConv3D((3,3,3), use_bias = False, 
                                 depth_multiplier = D,
                                 activation="relu",
                                 depthwise_constraint = max_norm(1.))(ir3)
     ir3          = Conv3D(F1, (1, 3, 32), padding = 'same',
-                                input_shape = (Chans, Samples, 1),
+                                input_shape = (trials, Chans, Samples),
                                 use_bias = False, activation="linear")(ir3)
     ir3          = Add()([ir2, ir3])
 
     ###################################################################
 
     block2       = Conv3D(F1, (1, 3, 32), padding = 'same',
-                                input_shape = (Chans, Samples, 1),
+                                input_shape = (trials, Chans, Samples),
                                 use_bias = False)(ir3)
     block2       = BatchNormalization()(block2)
     block2       = Activation('relu')(block2)
