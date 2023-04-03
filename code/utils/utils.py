@@ -4,7 +4,9 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 import matplotlib.pyplot as plt
-from tensorflow.keras.layers import Conv3D
+
+from tensorflow import keras
+from keras.layers import Conv3D
 
 from db_manager import DEAP_Manager
 
@@ -12,16 +14,18 @@ from sklearn.metrics import cohen_kappa_score
 
 import tensorflow as tf
 
-from tensorflow.keras import backend as K
-from tensorflow.keras import initializers
-from tensorflow.keras import regularizers
-from tensorflow.keras import constraints
-from tensorflow.keras import layers
-from tensorflow.keras.engine import InputSpec
-from tensorflow.keras.utils import conv_utils
-from tensorflow.keras.legacy.interfaces import conv3d_args_preprocessor, generate_legacy_interface
-from tensorflow.keras.layers import Conv3D
-from tensorflow.keras.backend.tensorflow_backend import _preprocess_padding, _preprocess_conv3d_input
+from keras import backend as K
+from keras import initializers
+from keras import regularizers
+from keras import constraints
+from keras import layers
+from keras.engine import InputSpec
+from keras.utils import conv_utils
+# from keras.legacy.interfaces import conv3d_args_preprocessor, generate_legacy_interface
+from keras.layers import Conv3D
+
+from keras import backend
+# from backend.tensorflow_backend import _preprocess_padding, _preprocess_conv3d_input
 
 
 def show_db_samples():
@@ -210,7 +214,7 @@ class DepthwiseConv3D(Conv3D):
         self.depthwise_constraint = constraints.get(depthwise_constraint)
         self.bias_initializer = initializers.get(bias_initializer)
         self.dilation_rate = dilation_rate
-        self._padding = _preprocess_padding(self.padding)
+        self._padding = backend._preprocess_padding(self.padding)
         self._strides = (1,) + self.strides + (1,)
         self._data_format = "NDHWC"
         self.input_dim = None
@@ -264,7 +268,7 @@ class DepthwiseConv3D(Conv3D):
         self.built = True
 
     def call(self, inputs, training=None):
-        inputs = _preprocess_conv3d_input(inputs, self.data_format)
+        inputs = backend._preprocess_conv3d_input(inputs, self.data_format)
 
         if self.data_format == 'channels_last':
             dilation = (1,) + self.dilation_rate + (1,)
