@@ -53,7 +53,7 @@ Where **DEAP** contains the data and **deap** represents this repository.
 
 * Install the required dependencies:
 
-        pip install requirements.txt
+        pip install -r requirements.txt
 
 ### 4. Start Working:
 

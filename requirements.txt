@@ -1,6 +1,6 @@
 numpy
 matplotlib
 tensorflow
-pickle
 scipy
 scikit-learn
+keras
