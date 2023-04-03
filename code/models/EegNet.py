@@ -8,6 +8,7 @@ from tensorflow.keras.regularizers import l1_l2
 from tensorflow.keras.layers import Input, Flatten
 from tensorflow.keras.constraints import max_norm
 from tensorflow.keras import backend as K
+from utils.utils import DepthwiseConv3D, separable_conv3d
 
 ## EEGNet model taken from https://github.com/vlawhern/arl-eegmodels/blob/master/EEGModels.py and modified to be a 3D CNN.
 
@@ -51,7 +52,7 @@ def EEGNet(nb_classes, Chans = 64, Samples = 128,
                                 input_shape = (Chans, Samples, 1),
                                 use_bias = False)(input1)
     block1       = BatchNormalization()(block1)
-    block1       = DepthwiseConv2D((Chans, 1), use_bias = False, 
+    block1       = DepthwiseConv3D((3,3,3), use_bias = False, 
                                 depth_multiplier = D,
                                 depthwise_constraint = max_norm(1.))(block1)
     block1       = BatchNormalization()(block1)
