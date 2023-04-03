@@ -16,7 +16,7 @@ from scikeras.wrappers import KerasClassifier
 from sklearn.model_selection import GridSearchCV,StratifiedShuffleSplit
 
 from utils.utils import prepare_experiment, kappa
-from model import GFC_triu_net_avg
+from models.GFC import GFC_triu_net_avg
 
 
 feats_val = pd.read_csv('valence_features_200.csv', index_col=0)
