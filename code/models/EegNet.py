@@ -41,7 +41,7 @@ def EEGNet_Full_3D(input_shape=(6,32,128), num_classes=2):
     irb3 = Conv3D(8, (1, 1, 1), padding='same', activation="linear")(irb3)
     irb3 = Add()([irb2, irb3])
 
-    x = Conv3D(16, (input_shape[0], 1, 1), padding='valid')(x)
+    x = Conv3D(16, (input_shape[0], 1, 1), padding='valid')(irb3)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
     x = Dropout(0.25)(x)
