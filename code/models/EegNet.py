@@ -10,7 +10,33 @@ from keras.regularizers import l1_l2
 from keras.layers import Input, Flatten
 from keras.constraints import max_norm
 from keras import backend as K
-from utils.utils import DepthwiseConv3D
+# from utils.utils import DepthwiseConv3D
+
+import tensorflow as tf
+
+class DepthwiseConv3D(tf.keras.layers.Layer):
+    def __init__(self, kernel_size, strides=(1, 1, 1), padding='valid'):
+        super(DepthwiseConv3D, self).__init__()
+        self.kernel_size = kernel_size
+        self.strides = strides
+        self.padding = padding
+
+    def build(self, input_shape):
+        self.depthwise_kernel = self.add_weight(
+            shape=(*self.kernel_size, input_shape[-1], 1),
+            initializer=tf.keras.initializers.glorot_uniform(),
+            trainable=True,
+            name='depthwise_kernel'
+        )
+
+    def call(self, inputs):
+        outputs = tf.nn.depthwise_conv3d(
+            inputs,
+            self.depthwise_kernel,
+            strides=(1, *self.strides, 1),
+            padding=self.padding.upper()
+        )
+        return outputs
 
 ## EEGNet model modified to be a 3D CNN.
 
@@ -30,14 +56,14 @@ def EEGNet_Full_3D(input_shape, num_classes):
     x = Dropout(0.25)(x)
 
     # Depthwise separable convolutional block using 3D depthwise separable convolutions
-    x = DepthwiseConv3D((input_shape[0], 1, 1), padding='valid')(x)
+    x = DepthwiseConv3D(kernel_size=(input_shape[0], 1, 1), padding='valid')(x)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
     x = Conv3D(16, (1, 3, 3), padding='same')(x)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
     x = Dropout(0.25)(x)
-    x = DepthwiseConv3D((1, 3, 3), padding='same')(x)
+    x = DepthwiseConv3D(kernel_size=(1, 3, 3), padding='same')(x)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
     x = Conv3D(16, (1, 1, 1), padding='same')(x)
