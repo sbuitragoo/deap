@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow import keras
 from keras.models import Model
 from keras.layers import Dense, Activation, Permute, Dropout
-from keras.layers import Conv3D, MaxPooling2D, AveragePooling3D
+from keras.layers import Conv3D, MaxPooling2D, AveragePooling3D, Conv2D
 from keras.layers import SeparableConv2D, DepthwiseConv2D, ReLU, Add
 from keras.layers import BatchNormalization
 from keras.layers import SpatialDropout2D
@@ -10,110 +10,91 @@ from keras.regularizers import l1_l2
 from keras.layers import Input, Flatten
 from keras.constraints import max_norm
 from keras import backend as K
-from utils.utils import DepthwiseConv3D, separable_conv3d
+from utils.utils import DepthwiseConv3D
 
 ## EEGNet model modified to be a 3D CNN.
 
+def EEGNet_Full_3D(input_shape, num_classes):
 
-def EEGNet(nb_classes, Chans = 64, Samples = 128, 
-             dropoutRate = 0.5, kernLength = 64, F1 = 8, 
-             D = 2, F2 = 16, norm_rate = 0.25, dropoutType = 'Dropout', trials = 6, number_of_chunks = 100):
-    """ 
-    Inputs:
-        
-    nb_classes      : int, number of classes to classify
-    Chans, Samples  : number of channels and time points in the EEG data
-    dropoutRate     : dropout fraction
-    kernLength      : length of temporal convolution in first layer. We found
-                        that setting this to be half the sampling rate worked
-                        well in practice. For the SMR dataset in particular
-                        since the data was high-passed at 4Hz we used a kernel
-                        length of 32.      
-    F1, F2          : number of temporal filters (F1) and number of pointwise
-                        filters (F2) to learn. Default: F1 = 8, F2 = F1 * D. 
-    D               : number of spatial filters to learn within each temporal
-                        convolution. Default: D = 2
-    dropoutType     : Either SpatialDropout2D or Dropout, passed as a string.
-    """
-    
-    if dropoutType == 'SpatialDropout2D':
-        dropoutType = SpatialDropout2D
-    elif dropoutType == 'Dropout':
-        dropoutType = Dropout
-    else:
-        raise ValueError('dropoutType must be one of SpatialDropout2D '
-                        'or Dropout, passed as a string.')
-    
-    input1       = Input(shape = (number_of_chunks, trials, Chans, Samples))
+    # Define the input layer
+    inputs = Input(shape=input_shape)
 
-    ###################################################################
+    # Temporal convolutional block using 3D convolutions
+    x = Conv3D(8, (1, 3, 3), padding='same')(inputs)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = Dropout(0.25)(x)
+    x = Conv3D(8, (input_shape[0], 1, 1), padding='valid')(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = Dropout(0.25)(x)
 
-    block1       = Conv3D(F1, kernel_size=(1, 3, 3), padding = 'same',
-                                input_shape = (number_of_chunks, trials, Chans, Samples),
-                                use_bias = False, strides=(1,2,2))(input1)
-    block1       = BatchNormalization()(block1)
-    block1       = Activation('relu')(block1)
+    # Depthwise separable convolutional block using 3D depthwise separable convolutions
+    x = DepthwiseConv3D((input_shape[0], 1, 1), padding='valid')(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = Conv3D(16, (1, 3, 3), padding='same')(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = Dropout(0.25)(x)
+    x = DepthwiseConv3D((1, 3, 3), padding='same')(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = Conv3D(16, (1, 1, 1), padding='same')(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = Dropout(0.25)(x)
 
-    ########################Inverted Residual 1########################
+    # Flatten the output and pass it through a fully connected layer for classification
+    x = Flatten()(x)
+    x = Dense(num_classes, activation='softmax')(x)
 
-    ir1          =  Conv3D(F1, (32,1,1), padding = 'same',
-                                input_shape = (number_of_chunks, trials, Chans, Samples),
-                                use_bias = False, activation="relu", strides=(1,1,1))(block1)
-    ir1          =  DepthwiseConv3D((3,3,3), use_bias = False, 
-                                depth_multiplier = D,
-                                activation="relu",
-                                depthwise_constraint = max_norm(1.))(ir1)
-    ir1          =  Conv3D(F1, (1, 3, 3), padding = 'same',
-                                input_shape = (number_of_chunks, trials, Chans, Samples),
-                                use_bias = False, activation="linear")(ir1)
-    ir1          =  Add()([block1, ir1])
+    # Define the model
+    model = Model(inputs=inputs, outputs=x)
 
-    ########################Inverted Residual 2########################
+    return model
 
-    ir2          =  Conv3D(F1, (1, 3, 32), padding = 'same',
-                                input_shape = (number_of_chunks, trials, Chans, Samples),
-                                use_bias = False, activation="relu", strides=(1,1,1))(ir1)
-    ir2          =  DepthwiseConv3D((3,3,3), use_bias = False, 
-                                depth_multiplier = D,
-                                activation="relu",
-                                depthwise_constraint = max_norm(1.))(ir2)
-    ir2          =  Conv3D(F1, (1, kernLength), padding = 'same',
-                                input_shape = (number_of_chunks, trials, Chans, Samples),
-                                use_bias = False, activation="linear")(ir2)
-    ir2          =  Add()([ir1, ir2])
+def EEGNet_3D(input_shape, num_classes):
 
-    ########################Inverted Residual 3########################
+    # Define the input layer
+    inputs = Input(shape=input_shape)
 
-    ir3          =  Conv3D(F1, (1, 3, 32), padding = 'same',
-                                input_shape = (number_of_chunks, trials, Chans, Samples),
-                                use_bias = False, activation="relu", strides=(1,1,1))(ir2)
-    ir3          =  DepthwiseConv3D((3,3,3), use_bias = False, 
-                                depth_multiplier = D,
-                                activation="relu",
-                                depthwise_constraint = max_norm(1.))(ir3)
-    ir3          =  Conv3D(F1, (1, 3, 32), padding = 'same',
-                                input_shape = (number_of_chunks, trials, Chans, Samples),
-                                use_bias = False, activation="linear")(ir3)
-    ir3          =  Add()([ir2, ir3])
+    # Temporal convolutional block using 2D convolutions
+    x = Conv2D(8, (1, 64), padding='same')(inputs)
+    x = BatchNormalization()(x)
+    x = Activation('elu')(x)
+    x = Dropout(0.25)(x)
+    x = Conv2D(8, (input_shape[0], 1), padding='valid')(x)
+    x = BatchNormalization()(x)
+    x = Activation('elu')(x)
+    x = Dropout(0.25)(x)
 
-    ###################################################################
+    # Depthwise separable convolutional block using a combination of 2D and 3D convolutions
+    x = DepthwiseConv2D((input_shape[0], 1), padding='valid')(x)
+    x = BatchNormalization()(x)
+    x = Activation('elu')(x)
+    x = Conv3D(16, (1, 3, 3), padding='same')(x)
+    x = BatchNormalization()(x)
+    x = Activation('elu')(x)
+    x = Dropout(0.25)(x)
+    x = DepthwiseConv3D((1, 3, 3), padding='same')(x)
+    x = BatchNormalization()(x)
+    x = Activation('elu')(x)
+    x = Conv3D(16, (1, 1, 1), padding='same')(x)
+    x = BatchNormalization()(x)
+    x = Activation('elu')(x)
+    x = Dropout(0.25)(x)
 
-    block2       =  Conv3D(F1, (1, 3, 32), padding = 'same',
-                                input_shape = (number_of_chunks, trials, Chans, Samples),
-                                use_bias = False)(ir3)
-    block2       =  BatchNormalization()(block2)
-    block2       =  Activation('relu')(block2)
+    # Flatten the output and pass it through a fully connected layer for classification
+    x = Flatten()(x)
+    x = Dense(num_classes, activation='softmax')(x)
 
-    do           =  dropoutType(dropoutRate)(block2)
+    # Define the model
+    model = Model(inputs=inputs, outputs=x)
 
-    flatten      =  Flatten(name = 'flatten')(do)
-    
-    dense        =  Dense(nb_classes, name = 'dense', 
-                        kernel_constraint = max_norm(norm_rate))(flatten)
-    
-    softmax      =  Activation('softmax', name = 'softmax')(dense)
-    
-    return Model(inputs=input1, outputs=softmax)
+    return model
+
+
 
 if __name__ == "__main__":
     pass
