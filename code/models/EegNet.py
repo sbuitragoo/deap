@@ -14,7 +14,7 @@ from utils.utils import DepthwiseConv3D
 
 ## EEGNet model modified to be a 3D CNN.
 
-def EEGNet_Full_3D(input_shape, num_classes):
+def EEGNet_Full_3D(input_shape=(6,32,128), num_classes=2):
 
     # Define the input layer
     inputs = Input(shape=input_shape)
