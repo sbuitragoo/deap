@@ -57,11 +57,16 @@ def EEGNet(nb_classes, Chans = 64, Samples = 128,
     ########################Inverted Residual 1########################
 
     ir1          = Conv3D(F1, (1, 3, 32), padding = 'same',
+                                input_shape = (number_of_chunks, trials, Chans, Samples),
                                 use_bias = False, activation="relu", strides=(1,1,1))(block1)
-    ir1       = DepthwiseConv3D((3,3,3), use_bias = False, 
+    ir1          = DepthwiseConv2D((3,3,3), use_bias = False, 
                                 depth_multiplier = D,
                                 activation="relu",
                                 depthwise_constraint = max_norm(1.))(ir1)
+    # ir1          = DepthwiseConv3D((3,3,3), use_bias = False, 
+    #                             depth_multiplier = D,
+    #                             activation="relu",
+    #                             depthwise_constraint = max_norm(1.))(ir1)
     ir1          = Conv3D(F1, (1, 3, 3), padding = 'same',
                                 input_shape = (number_of_chunks, trials, Chans, Samples),
                                 use_bias = False, activation="linear")(ir1)
@@ -72,7 +77,7 @@ def EEGNet(nb_classes, Chans = 64, Samples = 128,
     ir2          = Conv3D(F1, (1, 3, 32), padding = 'same',
                                 input_shape = (number_of_chunks, trials, Chans, Samples),
                                 use_bias = False, activation="relu", strides=(1,1,1))(ir1)
-    ir2       = DepthwiseConv3D((3,3,3), use_bias = False, 
+    ir2          = DepthwiseConv2D((3,3,3), use_bias = False, 
                                 depth_multiplier = D,
                                 activation="relu",
                                 depthwise_constraint = max_norm(1.))(ir2)
@@ -86,7 +91,7 @@ def EEGNet(nb_classes, Chans = 64, Samples = 128,
     ir3          = Conv3D(F1, (1, 3, 32), padding = 'same',
                                 input_shape = (number_of_chunks, trials, Chans, Samples),
                                 use_bias = False, activation="relu", strides=(1,1,1))(ir2)
-    ir3       = DepthwiseConv3D((3,3,3), use_bias = False, 
+    ir3          = DepthwiseConv2D((3,3,3), use_bias = False, 
                                 depth_multiplier = D,
                                 activation="relu",
                                 depthwise_constraint = max_norm(1.))(ir3)
@@ -103,7 +108,7 @@ def EEGNet(nb_classes, Chans = 64, Samples = 128,
     block2       = BatchNormalization()(block2)
     block2       = Activation('relu')(block2)
 
-    do       = dropoutType(dropoutRate)(block2)
+    do           = dropoutType(dropoutRate)(block2)
 
     flatten      = Flatten(name = 'flatten')(do)
     
