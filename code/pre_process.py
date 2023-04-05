@@ -120,6 +120,17 @@ def normalize(input_data, subjects):
 
     return normalized_data
 
+def make_chunks(input_data, subjects):
+
+    data = input_data[f"subject{1}"]
+
+    for subject in subjects:
+        if subject != 1:
+            subject_data = input_data[f"subject{subject}"]
+            np.concatenate((data, subject_data), axis=0)
+    
+    return data
+
 
 def label_binarization():
     # Read labels
