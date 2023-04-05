@@ -122,14 +122,19 @@ def normalize(input_data, subjects):
 
 def make_chunks(input_data, subjects):
 
-    data = input_data[f"subject{1}"]
+    data = input_data[f"subject{1}"][:1278, :, :]
 
     for subject in subjects:
         if subject != 1:
             subject_data = input_data[f"subject{subject}"]
-            np.concatenate((data, subject_data), axis=0)
+            np.concatenate((data, subject_data[:1278]), axis=0)
+            
+    chunks = np.zeros((1278*32/6, 6, 32, 128))
+
+    for trail in range (chunks.shape[0]):
+        chunks[trail, :, :, :] = data[trail*6:(trail+1)*6, :, :]
     
-    return data
+    return chunks
 
 
 def label_binarization():
