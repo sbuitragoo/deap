@@ -127,7 +127,7 @@ def make_chunks(input_data, subjects):
     for subject in subjects:
         if subject != 1:
             subject_data = input_data[f"subject{subject}"]
-            np.concatenate((data, subject_data[:1278]), axis=0)
+            data = np.concatenate((data, subject_data[:1278]), axis=0)
 
     print(f"Data after concatenating subjects: {data.shape}")
             
