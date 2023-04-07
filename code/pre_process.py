@@ -155,7 +155,7 @@ def label_binarization():
 def label_preprocessing():
     column_names = ["Participant_id", "Trial", "Valence", "Arousal", "Dominance", "Liking"]
     binary_labels = pd.read_csv("binary_labels.csv")
-    new_labels = np.zeros((40960, 6)) # 1280 trails x 32 subjects, 4 labels
+    new_labels = np.zeros((40960, 6)) # 1280 trails x 32 subjects, 2 columns of  metadata + 4 labels
 
     print(f"Starting label mapping...")
 
@@ -171,8 +171,30 @@ def label_preprocessing():
     new_labels_df = pd.DataFrame(new_labels, columns=column_names, dtype="Int64")
 
     print(f"Starting file writing...")
+    new_labels_df.to_csv('pre_processed_labels.csv', index=False)
+    print(f"File successfully written!")
+
+def map_labels_to_chunks():
+    column_names = ["Participant_id", "Trial", "Valence", "Arousal", "Dominance", "Liking"]
+    pre_processed_labels = pd.read_csv("pre_processed_labels.csv")
+    new_labels = np.zeros((6816, 6)) # 1278 trails x 32 subjects / 6 seconds per chunk, 2 columns of  metadata + 4 labels
+    
+    print(f"Starting label mapping...")
+    for index, label in enumerate(column_names):
+        for t in range(new_labels.shape[0]):
+            new_labels[t, index] = pre_processed_labels[label].iloc[t*6].astype(int)
+
+    new_labels_df = pd.DataFrame(new_labels, columns=column_names, dtype="Int64")
+    
+    print(f"Starting file writing...")
     new_labels_df.to_csv('final_labels.csv', index=False)
     print(f"File successfully written!")
+
+def pre_process_labels():
+    label_binarization()
+    label_preprocessing()
+    map_labels_to_chunks()
+    
 
 def pre_process(db_path: str):
     dm = DEAP_Manager(db_path)
@@ -202,13 +224,21 @@ def pre_process(db_path: str):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     subparser = parser.add_subparsers(dest='command')
-    params = subparser.add_parser('params')
-    params.add_argument('--db', type=str, required=True,
+    type_ = subparser.add_parser('type')
+    type_.add_argument('--db', type=str, required=True,
                         help="Path to the data base")
+    type_.add_argument('--pt', type=str, required=True,
+                        help="Pre process type [data | labels]")
     
     arguments = parser.parse_args()
 
     if arguments.command == "params":
         pre_processed_data = pre_process(arguments.db)
-    else:
-        pre_processed_data = pre_process("../../DEAP")
+    if arguments.command == "type":
+        if arguments.pt == "data":
+            if arguments.db:
+                pre_processed_data = pre_process(arguments.db)
+            else:
+                pre_processed_data = pre_process("../../DEAP")
+        elif arguments.pt == "labels":
+            pre_process_labels()
