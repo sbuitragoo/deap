@@ -128,6 +128,8 @@ def make_chunks(input_data, subjects):
         if subject != 1:
             subject_data = input_data[f"subject{subject}"]
             np.concatenate((data, subject_data[:1278]), axis=0)
+
+    print(f"Data after concatenating subjects: {data.shape}")
             
     chunks = np.zeros((int(1278*32/6), 6, 32, 128))
 
