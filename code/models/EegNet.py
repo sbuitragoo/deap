@@ -14,31 +14,31 @@ from utils.utils import DepthwiseConv3D
 
 ## EEGNet model modified to be a 3D CNN.
 
-def EEGNet_Full_3D(input_shape=(6,32,128), num_classes=1):
+def EEGNet_Full_3D(input_shape=(6,32,128), num_classes=1, WF=0.5):
 
     # Define the input layer
     inputs = Input(shape=input_shape)
 
     # Temporal convolutional block using 3D convolutions
-    x = Conv3D(8, (1, 3, 3), padding='same')(inputs)
+    x = Conv3D(int(16*WF), (1, 1, 1), padding='same', strides=(1,2,2))(inputs)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
     # x = Dropout(0.25)(x)
 
     # Depthwise separable convolutional block using 3D depthwise separable convolutions
-    irb1 = Conv3D(8, (1, 1, 1), padding='same', activation="relu")(x)
-    irb1 = DepthwiseConv3D(kernel_size=(input_shape[0], 1, 1), padding='valid')(irb1)
-    irb1 = Conv3D(8, (1, 1, 1), padding='same', activation="linear")(irb1)
+    irb1 = Conv3D(int(16*WF), (1, 1, 1), padding='same', activation="relu")(x)
+    irb1 = DepthwiseConv3D(kernel_size=(3, 3, 3), padding='valid')(irb1)
+    irb1 = Conv3D(int(16*WF), (1, 1, 1), padding='same', activation="linear")(irb1)
     irb1 = Add()([x, irb1])
 
-    irb2 = Conv3D(8, (1, 1, 1), padding='same', activation="relu")(irb1)
-    irb2 = DepthwiseConv3D(kernel_size=(input_shape[0], 1, 1), padding='valid')(irb2)
-    irb2 = Conv3D(8, (1, 1, 1), padding='same', activation="linear")(irb2)
+    irb2 = Conv3D(int(16*WF), (1, 1, 1), padding='same', activation="relu")(irb1)
+    irb2 = DepthwiseConv3D(kernel_size=(3, 3, 3), padding='valid')(irb2)
+    irb2 = Conv3D(int(16*WF), (1, 1, 1), padding='same', activation="linear")(irb2)
     irb2 = Add()([irb1, irb2])
 
-    irb3 = Conv3D(8, (1, 1, 1), padding='same', activation="relu")(irb2)
-    irb3 = DepthwiseConv3D(kernel_size=(input_shape[0], 1, 1), padding='valid')(irb3)
-    irb3 = Conv3D(8, (1, 1, 1), padding='same', activation="linear")(irb3)
+    irb3 = Conv3D(int(16*WF), (1, 1, 1), padding='same', activation="relu")(irb2)
+    irb3 = DepthwiseConv3D(kernel_size=(3, 3, 3), padding='valid')(irb3)
+    irb3 = Conv3D(int(16*WF), (1, 1, 1), padding='same', activation="linear")(irb3)
     irb3 = Add()([irb2, irb3])
 
     x = Conv3D(16, (input_shape[0], 1, 1), padding='valid')(irb3)
