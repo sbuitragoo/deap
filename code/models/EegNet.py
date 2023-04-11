@@ -27,7 +27,7 @@ def EEGNet_Full_3D(input_shape=(6,32,128), num_classes=1, WF=0.5):
 
     # Depthwise separable convolutional block using 3D depthwise separable convolutions
     irb1 = Conv3D(int(16*WF), (1, 1, 1), padding='same', activation="relu")(x)
-    irb1 = DepthwiseConv3D(kernel_size=(3, 3, 3), padding='valid')(irb1)
+    irb1 = DepthwiseConv3D(kernel_size=(1, 1, 1), padding='valid')(irb1)
     irb1 = Conv3D(int(16*WF), (1, 1, 1), padding='same', activation="linear")(irb1)
     irb1 = Add()([x, irb1])
 
