@@ -20,7 +20,7 @@ def EEGNet_Full_3D(input_shape=(6,32,128), num_classes=1, WF=0.5):
     inputs = Input(shape=input_shape)
 
     # Temporal convolutional block using 3D convolutions
-    x = Conv3D(int(16*WF), (input_shape.shape[0], 1, 1), padding='same', strides=(1,2,2))(inputs)
+    x = Conv3D(int(16*WF), (input_shape[0], 1, 1), padding='same', strides=(1,2,2))(inputs)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
     # x = Dropout(0.25)(x)
