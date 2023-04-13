@@ -20,7 +20,7 @@ def EEGNet_Full_3D(input_shape=(6,32,128), num_classes=2, WF=0.5):
     inputs = Input(shape=input_shape)
 
     # Temporal convolutional block using 3D convolutions
-    x = Conv3D(int(16*WF), (1, 1, 1), padding='same', strides=(1,2,2))(inputs)
+    x = Conv3D(int(16*WF), (1, 1, int(input_shape[2]/2)), padding='same', strides=(1,2,2))(inputs)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
 
@@ -57,7 +57,7 @@ def EEGNet_Full_3D(input_shape=(6,32,128), num_classes=2, WF=0.5):
 
     x = AveragePooling3D(pool_size=(1,1,1))(irb3)
 
-    x = Conv3D(16, (1, 1, int(input_shape[-2]/2)), padding='valid', activation="relu", kernel_regularizer=tf.keras.regularizers.L2(0.01))(x)
+    x = Conv3D(16, (1, 1, int(input_shape[2]/2)), padding='valid', activation="relu", kernel_regularizer=tf.keras.regularizers.L2(0.01))(x)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
 
