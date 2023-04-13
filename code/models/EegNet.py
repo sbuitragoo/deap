@@ -64,11 +64,11 @@ def EEGNet_Full_3D(input_shape=(6,32,128), num_classes=2, WF=0.5):
     # Flatten the output and pass it through a fully connected layer for classification
     x = Flatten()(x)
     x = Dense(64, activation="relu")(x)
-    x = Dropout(0.25)(x)
+    x = Dropout(0.5)(x)
     x = Dense(32, activation="relu")(x)
-    x = Dropout(0.25)(x)
+    x = Dropout(0.5)(x)
     x = Dense(8, activation="relu")(x)
-    x = Dropout(0.25)(x)
+    x = Dropout(0.5)(x)
     x = Dense(num_classes, activation='softmax')(x)
 
     # Define the model
