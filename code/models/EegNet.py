@@ -14,7 +14,7 @@ from utils.utils import DepthwiseConv3D
 
 ## EEGNet model modified to be a 3D CNN.
 
-def EEGNet_Full_3D(input_shape=(6,32,128), num_classes=1, WF=0.5):
+def EEGNet_Full_3D(input_shape=(6,32,128), num_classes=2, WF=0.5):
 
     # Define the input layer
     inputs = Input(shape=input_shape)
@@ -57,7 +57,7 @@ def EEGNet_Full_3D(input_shape=(6,32,128), num_classes=1, WF=0.5):
 
     x = AveragePooling3D(pool_size=(1,1,1))(irb3)
 
-    x = Conv3D(16, (input_shape[0], 1, 1), padding='valid', activation="relu")(x)
+    x = Conv3D(16, (1, 1, int(input_shape[-2]/2)), padding='valid', activation="relu")(x)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
 
